@@ -1,3 +1,4 @@
+require 'byebug'
 class Simon
   COLORS = %w(red blue green yellow)
 
@@ -13,18 +14,17 @@ class Simon
     until @game_over
       take_turn
     end
+    game_over_message
     reset_game
   end
 
   def take_turn
     unless game_over
       show_sequence
-      if @seq == require_sequence
-        round_success_message
-      else
-        game_over_message
+      unless require_sequence
         @game_over = true
       end
+      round_success_message
       @sequence_length += 1
     end
 
@@ -32,12 +32,14 @@ class Simon
 
   def show_sequence
     add_random_color
+    p @seq
   end
 
   def require_sequence
     print "Input sequince (i.e. red,blue,green,yellow): "
-    user_input = gets.chomp.split(",");
-    user_input
+    user_input = gets.chomp.split(",")
+    return true if user_input == @seq
+    false
   end
 
   def add_random_color
@@ -50,7 +52,7 @@ class Simon
   end
 
   def game_over_message
-    puts "I'm sorry that was incorrect. The correct sequence was #{@seq}"
+    puts "I'm sorry that was incorrect"
   end
 
   def reset_game
